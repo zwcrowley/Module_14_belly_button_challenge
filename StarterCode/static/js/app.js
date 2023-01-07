@@ -69,9 +69,15 @@ d3.json(url).then(function(data) {
     // Clear previous selection:
     panel.html("");
 
+    // function to capitalize first letter in panel key-value pairs:
+    function capitalizeFirstLetter(string) {
+      return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+  
     // Add each key and value to a new header seperated by a colon:
     Object.entries(newdata).forEach(([key, value]) => {
-      panel.append("h5").text(`${key.toUpperCase()}: ${value}`); 
+      var key = capitalizeFirstLetter(key) 
+      panel.append("h5").text(`${key}: ${value}`);    
     });    
   } 
 
