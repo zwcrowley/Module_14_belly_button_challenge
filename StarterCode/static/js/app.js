@@ -23,7 +23,7 @@ d3.json(url).then(function(data) {
       });
   }
 
-  // Function to initialize all the charts and panel with the first Id = 940:
+  // Function to initialize all the first id for the charts and panel with the first Id = 940, passes that name to getData(), the on event in the next function will updata once a new id is selected from the dropdown menu:
   function init() {
     var firstName = data.names[0];
     getData(firstName); 
@@ -31,25 +31,25 @@ d3.json(url).then(function(data) {
 
   }
   
-  // On change to the DOM, call getmetaData()
+  // On change event int this function will updata once a new id is selected from the dropdown menu and then call getData()
   d3.selectAll("#selDataset").on("change", getData);
 
   // Function called by onchange in the drop down Menu, this gets the data from the chosen ID for the metadata for the panel demo table and the sample data for the charts:
   function getData() {
     // Assign the value of the dropdown menu option to a variable:
     var dataValue = d3.select("#selDataset").property("value");
-
+    // First, the metadata for the panel demo table:
     // Set metadata to a var:
     var metadata = data.metadata;
     // Filter the metadata to find the id that was selected in the dropdownMenu (dataValue)):
-    var chosenMetadata = metadata.filter(sample => sample.id == dataValue);  
+    var chosenMetadata = metadata.filter(meta => meta.id == dataValue);  
     console.log("Result Array: ",chosenMetadata) 
-    var chosenMeta = chosenMetadata[0] 
+    var chosenMeta = chosenMetadata[0]  
 
     // Call "updatePanel" function to update the panel with the new metadata:
     updatePanel(chosenMeta);
 
-    // Get data for the bar chart and the bubble chart:
+    // Next, get data for the bar chart and the bubble chart:
     // Set samples to a var:
     var samples = data.samples;
     // Filter the samples to match the chosen value in the dropdown menu= dataValue, add [0] to the end to pull out that sample key:
@@ -57,7 +57,8 @@ d3.json(url).then(function(data) {
 
     // Call "makeBarChart" function to pass the sampleMatched to it: 
     makeBarChart(sampleMatched); 
-    // makeBubbleChart(sampleMatched);
+    // Call "makeBubbleChart" function to pass the sampleMatched to it: 
+    makeBubbleChart(sampleMatched); 
   }
 
   // Function to make the horz bar chart:
@@ -67,13 +68,8 @@ d3.json(url).then(function(data) {
     var otu_labels = newdata.otu_labels.slice(0, 10).reverse();
     var sample_values = newdata.sample_values.slice(0, 10).reverse();
 
-    // console.log("Chosen otu_ids: ", otu_ids);
-    // console.log("Chosen otu_labels: ", otu_labels);
-    // console.log("Chosen otu_values: ", sample_values); 
-
     // Re-format the otu_ids as labels for the y-axis:
     var y_labels = otu_ids.map(otu_id => `OTU ${otu_id}`);   
-    // console.log("Chosen y_labels: ", y_labels);   
 
     // Trace1 for the top 10 belly button data: 
     var trace1 = {
@@ -110,6 +106,32 @@ d3.json(url).then(function(data) {
     var otu_ids = newdata.otu_ids;
     var otu_labels = newdata.otu_labels;
     var sample_values = newdata.sample_values;
+
+    // Set up trace2 with as the data for the bubble chart:
+    var trace2 = {
+      x: otu_ids,
+      y: sample_values,
+      text: otu_labels, 
+      mode: 'markers',
+      marker: {
+        color: otu_ids,
+        colorscale: 'Earth',
+        size: sample_values,
+        sizeref: 1.6, 
+      }
+    };
+
+    // Add the trace2 to bubbleData array:
+    var bubbleData = [trace2];
+
+    // Apply a title to the layout and turn off legend, pull the ID for the title:
+    var layout = {
+      title: `Bubble Chart of OTUs in ID: ${newdata.id}`, 
+      showlegend: false,
+    };
+    
+    // Render the plot to the div tag with id "bubble", and pass bubbleData and layout, Plot the new plot in the bubble div: 
+    Plotly.newPlot('bubble', bubbleData, layout); 
 
   }
   
