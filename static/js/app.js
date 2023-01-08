@@ -27,7 +27,6 @@ d3.json(url).then(function(data) {
   function init() {
     var firstName = data.names[0];
     getData(firstName); 
-    // makeBarChart(firstName);
 
   }
   
@@ -59,6 +58,9 @@ d3.json(url).then(function(data) {
     makeBarChart(sampleMatched); 
     // Call "makeBubbleChart" function to pass the sampleMatched to it: 
     makeBubbleChart(sampleMatched); 
+    // Call "makeGaugeChart" function to pass the sampleMatched to it: 
+    // makeGaugeChart(sampleMatched); 
+
   }
 
   // Function to make the horz bar chart:
