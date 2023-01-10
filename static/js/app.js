@@ -151,8 +151,8 @@ d3.json(url).then(function(data) {
     }
   
     // Add each key and value pair in the chonen metadata to a new header- h5 - seperated by a colon:
-    Object.entries(newdata).forEach(([key, value]) => {
-      let key = capitalizeFirstLetter(key);
+    Object.entries(newdata).forEach(([key, value]) => { 
+      var key = capitalizeFirstLetter(key);
       panel.append("h5").text(`${key}: ${value}`);    
     });    
   } 

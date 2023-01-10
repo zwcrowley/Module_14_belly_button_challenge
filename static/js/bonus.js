@@ -11,7 +11,7 @@ d3.json(url).then(function(data) {
         }
 
     // Same getData function as app.js, only retrieves the data from the metadata since the gauge only needs the value from the wfreq key in the metadata:
-    function getData() {
+    function getData() { 
         // Assign the value of the dropdown menu option to a variable:
         let dataValue = d3.select("#selDataset").property("value");
         // First, the metadata for the panel demo table:
