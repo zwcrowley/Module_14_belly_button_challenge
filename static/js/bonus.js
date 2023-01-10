@@ -1,21 +1,26 @@
 // Script to make bonus Gauge Chart: 
+
+// Read in the json from app.js:
 d3.json(url).then(function(data) {
+
+    // Same inialization function as app.js:
     function init() {
-        var firstName = data.names[0];
+        let firstName = data.names[0];
         getData(firstName); 
-        console.log("first name: ", firstName)
 
         }
+
+    // Same getData function as app.js, only retrieves the data from the metadata since the gauge only needs the value from the wfreq key in the metadata:
     function getData() {
         // Assign the value of the dropdown menu option to a variable:
-        var dataValue = d3.select("#selDataset").property("value");
+        let dataValue = d3.select("#selDataset").property("value");
         // First, the metadata for the panel demo table:
         // Set metadata to a var:
-        var metadata = data.metadata;
+        let metadata = data.metadata;
         // Filter the metadata to find the id that was selected in the dropdownMenu (dataValue)):
-        var chosenMetadata = metadata.filter(meta => meta.id == dataValue);  
+        let chosenMetadata = metadata.filter(meta => meta.id == dataValue);  
         console.log("Result Array: ",chosenMetadata) 
-        var chosenMeta = chosenMetadata[0]  
+        let chosenMeta = chosenMetadata[0]  
     
         // Call "makeGaugeChart" function to pass the sampleMatched to it: 
         makeGaugeChart(chosenMeta); 
@@ -24,11 +29,11 @@ d3.json(url).then(function(data) {
 
     // Function to make the Gauge chart:
     function makeGaugeChart(newdata) {
-    // Select the wfreq var in the array of chosenMetadata (newdata) and save to an object to build the gauge chart for the chosen id:
-    var washing_freq = newdata.wfreq
+        // Select the wfreq var in the array of chosenMetadata (newdata) and save to an object to build the gauge chart for the chosen id:
+        let washing_freq = newdata.wfreq
 
-    console.log("newdata: ", newdata)  
-    console.log("washing_freq: ", washing_freq)  
+        console.log("newdata: ", newdata)  
+        console.log("washing_freq: ", washing_freq)  
 
 
     }

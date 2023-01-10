@@ -14,9 +14,9 @@ d3.json(url).then(function(data) {
   // Function to create the drop down menu using "names" from the belly button JSON data:
   function createDropDown(data) {
     // Get names as a var:
-    var names = data.names;
+    let names = data.names;
     // Select the id for the drop down menu and set as a var:
-    var select = d3.select("#selDataset");
+    let select = d3.select("#selDataset");
     // Set up the dropdown menu by pulling the individual id and passing it to the select tag and creating an "option" child using forEach to iterate through the individual ids:
     names.forEach((name) => {
       select.append("option").text(name).property("value", name);  
@@ -25,7 +25,7 @@ d3.json(url).then(function(data) {
 
   // Function to initialize all the first id for the charts and panel with the first Id = 940, passes that name to getData(), the on event in the next function will updata once a new id is selected from the dropdown menu:
   function init() {
-    var firstName = data.names[0];
+    let firstName = data.names[0];
     getData(firstName); 
 
   }
@@ -36,23 +36,22 @@ d3.json(url).then(function(data) {
   // Function called by onchange in the drop down Menu, this gets the data from the chosen ID for the metadata for the panel demo table and the sample data for the charts:
   function getData() {
     // Assign the value of the dropdown menu option to a variable:
-    var dataValue = d3.select("#selDataset").property("value");
+    let dataValue = d3.select("#selDataset").property("value");
     // First, the metadata for the panel demo table:
     // Set metadata to a var:
-    var metadata = data.metadata;
+    let metadata = data.metadata;
     // Filter the metadata to find the id that was selected in the dropdownMenu (dataValue)):
-    var chosenMetadata = metadata.filter(meta => meta.id == dataValue);  
-    console.log("Result Array: ",chosenMetadata) 
-    var chosenMeta = chosenMetadata[0]  
+    let chosenMetadata = metadata.filter(meta => meta.id == dataValue);  
+    let chosenMeta = chosenMetadata[0]  
 
     // Call "updatePanel" function to update the panel with the new metadata:
     updatePanel(chosenMeta);
 
     // Next, get data for the bar chart and the bubble chart:
     // Set samples to a var:
-    var samples = data.samples;
+    let samples = data.samples;
     // Filter the samples to match the chosen value in the dropdown menu= dataValue, add [0] to the end to pull out that sample key:
-    var sampleMatched = samples.filter(s => s.id.toString() === dataValue)[0];
+    let sampleMatched = samples.filter(s => s.id === dataValue)[0]; 
 
     // Call "makeBarChart" function to pass the sampleMatched to it: 
     makeBarChart(sampleMatched); 
@@ -66,15 +65,15 @@ d3.json(url).then(function(data) {
   // Function to make the horz bar chart:
   function makeBarChart(newdata) {
     // Set all the vars in the array of sampleMatched (newdata) to object vars to build the charts, slice the top 10 and reverse them:
-    var otu_ids = newdata.otu_ids.slice(0, 10).reverse();
-    var otu_labels = newdata.otu_labels.slice(0, 10).reverse();
-    var sample_values = newdata.sample_values.slice(0, 10).reverse();
+    let otu_ids = newdata.otu_ids.slice(0, 10).reverse();
+    let otu_labels = newdata.otu_labels.slice(0, 10).reverse();
+    let sample_values = newdata.sample_values.slice(0, 10).reverse();
 
     // Re-format the otu_ids as labels for the y-axis:
-    var y_labels = otu_ids.map(otu_id => `OTU ${otu_id}`);   
+    let y_labels = otu_ids.map(otu_id => `OTU ${otu_id}`);   
 
     // Trace1 for the top 10 belly button data: 
-    var trace1 = {
+    let trace1 = {
       x: sample_values,
       y: y_labels, 
       text: otu_ids,
@@ -105,12 +104,12 @@ d3.json(url).then(function(data) {
   // Function to make the bubble chart:
   function makeBubbleChart(newdata) {
     // Set all the vars in the array of sampleMatched (newdata) to object vars to build the charts:
-    var otu_ids = newdata.otu_ids;
-    var otu_labels = newdata.otu_labels;
-    var sample_values = newdata.sample_values;
+    let otu_ids = newdata.otu_ids;
+    let otu_labels = newdata.otu_labels;
+    let sample_values = newdata.sample_values;
 
     // Set up trace2 with as the data for the bubble chart:
-    var trace2 = {
+    let trace2 = {
       x: otu_ids,
       y: sample_values,
       text: otu_labels, 
@@ -124,10 +123,10 @@ d3.json(url).then(function(data) {
     };
 
     // Add the trace2 to bubbleData array:
-    var bubbleData = [trace2];
+    let bubbleData = [trace2];
 
     // Apply a title to the layout and turn off legend, pull the ID for the title:
-    var layout = {
+    let layout = {
       title: `Bubble Chart of OTUs in ID: ${newdata.id}`, 
       showlegend: false,
     };
@@ -141,7 +140,7 @@ d3.json(url).then(function(data) {
   // Function to update the demographic panel with the chosen metadata's new info:
   function updatePanel(newdata) {
     // Set the div of id="sample-metadata" to panel
-    var panel = d3.select("#sample-metadata");
+    let panel = d3.select("#sample-metadata");
 
     // Clear previous selection in the panel:
     panel.html("");
@@ -153,7 +152,7 @@ d3.json(url).then(function(data) {
   
     // Add each key and value pair in the chonen metadata to a new header- h5 - seperated by a colon:
     Object.entries(newdata).forEach(([key, value]) => {
-      var key = capitalizeFirstLetter(key);
+      let key = capitalizeFirstLetter(key);
       panel.append("h5").text(`${key}: ${value}`);    
     });    
   } 
