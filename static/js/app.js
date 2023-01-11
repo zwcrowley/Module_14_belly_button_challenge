@@ -5,7 +5,7 @@
 const url = "https://2u-data-curriculum-team.s3.amazonaws.com/dataviz-classroom/v1.1/14-Interactive-Web-Visualizations/02-Homework/samples.json";
 
 // Promise Pending for the belly button JSON data:
-const dataPromise = d3.json(url);
+var dataPromise = d3.json(url);
 console.log("Data Promise: ", dataPromise);
 
 // Fetch the JSON data and start to run the following functions to complete all of the dashboard requirements:
@@ -21,17 +21,19 @@ d3.json(url).then(function(data) {
     names.forEach((name) => {
       select.append("option").text(name).property("value", name);  
       });
+      console.log("names",names)
   }
 
   // Function to initialize all the first id for the charts and panel with the first Id = 940, passes that name to getData(), the on event in the next function will updata once a new id is selected from the dropdown menu:
   function init() {
-    let firstName = data.names[0];
+    var firstName = data.names[0];
     getData(firstName); 
+    console.log("firstName",firstName) 
 
   }
   
   // On change event int this function will updata once a new id is selected from the dropdown menu and then call getData()
-  d3.selectAll("#selDataset").on("change", getData);
+  d3.select("#selDataset").on("change", getData); 
 
   // Function called by onchange in the drop down Menu, this gets the data from the chosen ID for the metadata for the panel demo table and the sample data for the charts:
   function getData() {
@@ -58,7 +60,7 @@ d3.json(url).then(function(data) {
     // Call "makeBubbleChart" function to pass the sampleMatched to it: 
     makeBubbleChart(sampleMatched); 
     // Call "makeGaugeChart" function to pass the sampleMatched to it: 
-    // makeGaugeChart(sampleMatched); 
+    makeGaugeChart(chosenMeta); 
 
   }
 
@@ -87,18 +89,18 @@ d3.json(url).then(function(data) {
     var barData = [trace1];
 
     // Apply a title to the layout and margins, pull the ID for the title:
-    let layout = {
-      title: `Top Ten OTUs in ID: ${newdata.id}`, 
+    let layout_bar = {
+      title: `<b>Top Ten OTUs in ID: ${newdata.id}</b>`, 
       margin: {
-        l: 100,
-        r: 100,
-        t: 100,
-        b: 100
+        l: 75,
+        r: 50,
+        t: 50,
+        b: 50
       }
     };
 
     // Render the plot to the div tag with id "bar", and pass barData and layout:
-    Plotly.newPlot("bar", barData, layout); 
+    Plotly.newPlot("bar", barData, layout_bar); 
   }
 
   // Function to make the bubble chart:
@@ -126,16 +128,72 @@ d3.json(url).then(function(data) {
     let bubbleData = [trace2];
 
     // Apply a title to the layout and turn off legend, pull the ID for the title:
-    let layout = {
-      title: `Bubble Chart of OTUs in ID: ${newdata.id}`, 
+    let layout_bubble = {
+      title: `<b>Bubble Chart of OTUs in ID: ${newdata.id}</b>`,
+      xaxis: {
+        title: {
+          text: 'OTU ID'}
+        }, 
       showlegend: false,
+      margin: {
+        t: 50,
+        r: 50,
+        b: 100,
+        l: 50
+      },
     };
     
     // Render the plot to the div tag with id "bubble", and pass bubbleData and layout, Plot the new plot in the bubble div: 
-    Plotly.newPlot('bubble', bubbleData, layout); 
+    Plotly.newPlot('bubble', bubbleData, layout_bubble); 
 
   }
   
+
+  // Function to make the Gauge chart:
+  function makeGaugeChart(newdata) {
+    // Select the wfreq var in the array of chosenMetadata (newdata) and save to an object to build the gauge chart for the chosen id:
+    let washing_freq = newdata.wfreq
+
+    console.log("newdata: ", newdata)  
+    console.log("washing_freq: ", washing_freq)  
+
+    var gaugeData = [
+        {
+          type: "indicator",
+          mode: "gauge+number",
+          value: washing_freq,
+          title: { text: `<b>Belly Button Washing Frequency of ID: ${newdata.id}</b> <br> Scrubs per Week`, font: { size: 18 } },
+          gauge: {
+            axis: { range: [null, 9], tickmode: "array", tickvals: [0,1,2,3,4,5,6,7,8,9],ticks: "inside", tickwidth: 5, ticklen: 50,tickcolor: "darkblue" },
+            bar: { color: "black" },
+            bgcolor: "white",
+            borderwidth: 2,
+            bordercolor: "gray",
+            steps: [
+              { range: [0, 1], color: "white" },
+              { range: [1, 2], color: "gray" },
+              { range: [2,3], color: "yellow" },
+              { range: [3, 4], color: "cyan" },
+              { range: [5, 6], color: "royalblue" },
+              { range: [6, 7], color: "royalblue" },
+              { range: [7, 8], color: "royalblue" },
+              { range: [8, 9], color: "royalblue" },
+              // NEED TO FIX COLORS AND FORMAT REST OF CHART:
+            ]
+          }
+        }
+      ];
+      
+      var layout_gauge = {
+        width: 500,
+        height: 450,
+        margin: { t: 25, r: 50, l: 50, b: 50 }
+        //, xaxis: {title: {text: 'Scrubs per Week'}} NEED TO FIX
+      };
+      
+      Plotly.newPlot("gauge", gaugeData, layout_gauge);
+
+  } 
 
   // Function to update the demographic panel with the chosen metadata's new info:
   function updatePanel(newdata) {
@@ -157,11 +215,6 @@ d3.json(url).then(function(data) {
       panel.append("h5").text(`${key}: ${value}`);    
     });    
   } 
-
-  // // Update the all of the plots using restyled plot's values
-  // function updatePlotly(newdata) {
-  //   Plotly.restyle("pie", "values", [newdata]);
-  // }
 
   // Run the functions to create the dropdown menu and initilize the charts:
   createDropDown(data);  
