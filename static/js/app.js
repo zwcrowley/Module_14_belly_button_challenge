@@ -21,18 +21,15 @@ d3.json(url).then(function(data) {
     names.forEach((name) => {
       select.append("option").text(name).property("value", name);  
       });
-      console.log("names",names)
   }
 
-  // Function to initialize all the first id for the charts and panel with the first Id = 940, passes that name to getData(), the on event in the next function will updata once a new id is selected from the dropdown menu:
+  // Function to initialize the first id for the charts and panel with the first Id = 940, passes that name to getData(), the on event in the next function will updata once a new id is selected from the dropdown menu:
   function init() {
     var firstName = data.names[0];
     getData(firstName); 
-    console.log("firstName",firstName) 
-
   }
   
-  // On change event int this function will updata once a new id is selected from the dropdown menu and then call getData()
+  // On change event: This function will updata once a new id is selected from the dropdown menu and then call getData()
   d3.select("#selDataset").on("change", getData); 
 
   // Function called by onchange in the drop down Menu, this gets the data from the chosen ID for the metadata for the panel demo table and the sample data for the charts:
@@ -55,6 +52,7 @@ d3.json(url).then(function(data) {
     // Filter the samples to match the chosen value in the dropdown menu= dataValue, add [0] to the end to pull out that sample key:
     let sampleMatched = samples.filter(s => s.id === dataValue)[0]; 
 
+    // Pass sampleMatched to all of the charts:
     // Call "makeBarChart" function to pass the sampleMatched to it: 
     makeBarChart(sampleMatched); 
     // Call "makeBubbleChart" function to pass the sampleMatched to it: 
@@ -64,7 +62,7 @@ d3.json(url).then(function(data) {
 
   }
 
-  // Function to make the horz bar chart:
+  // Function to make the horizontal bar chart for top ten OTU IDS for the chosen subject ID:
   function makeBarChart(newdata) {
     // Set all the vars in the array of sampleMatched (newdata) to object vars to build the charts, slice the top 10 and reverse them:
     let otu_ids = newdata.otu_ids.slice(0, 10).reverse();
@@ -93,7 +91,7 @@ d3.json(url).then(function(data) {
       title: `<b>Top Ten OTUs in ID: ${newdata.id}</b>`, 
       margin: {
         l: 75,
-        r: 50,
+        r: 0,
         t: 50,
         b: 50
       }
@@ -103,7 +101,7 @@ d3.json(url).then(function(data) {
     Plotly.newPlot("bar", barData, layout_bar); 
   }
 
-  // Function to make the bubble chart:
+  // Function to make the bubble chart of all OTU IDs found in the chosen sample:
   function makeBubbleChart(newdata) {
     // Set all the vars in the array of sampleMatched (newdata) to object vars to build the charts:
     let otu_ids = newdata.otu_ids;
@@ -154,20 +152,19 @@ d3.json(url).then(function(data) {
     // Select the wfreq var in the array of chosenMetadata (newdata) and save to an object to build the gauge chart for the chosen id:
     let washing_freq = newdata.wfreq
 
-    console.log("newdata: ", newdata)  
-    console.log("washing_freq: ", washing_freq)  
-
+    // Set up the indicator gauge using the washing_freq as the value that is displayed for each chosen subject ID: 
     var gaugeData = [
         {
           type: "indicator",
           mode: "gauge+number",
-          // colorscale: 'Earth',
+          domain: { x: [0, 1], y: [0, 1] },
           value: washing_freq,
           title: { text: `<b>Belly Button Washing Frequency of ID: ${newdata.id}</b> <br> Scrubs per Week`, font: { size: 18 } },
           gauge: {
-            axis: { range: [null, 9], tickmode: "array", tickvals: [0,1,2,3,4,5,6,7,8,9], ticks: "inside", tickwidth: 4, ticklen: 50, tickcolor: "lightslategrey" }, 
+            axis: { range: [null, 9], tickmode: "array", ticktext: ["Very<br>Dirty","1","2","3","4","5","6","7","8","Very<br>Clean"],tickvals: [0,1,2,3,4,5,6,7,8,9], ticks: "inside", tickwidth: 4, ticklen: 50, tickcolor: "lightslategrey",
+            tickfont: {size: 22} }, 
             // Set the color of the gauge marker:
-            bar: { thickness:0.6, color: "black" }, 
+            bar: { thickness:0.6, color: "black" },  
             bgcolor: "white",
             borderwidth: 2,
             bordercolor: "lightslategrey",
@@ -186,22 +183,27 @@ d3.json(url).then(function(data) {
           }
         }
       ];
-      
+
+      // Set up the indicator gauge layout size and margins: 
       var layout_gauge = {
         width: 500,
         height: 450,
-        margin: { t: 25, r: 50, l: 50, b: 50 }, 
-        yaxis: {
-          title: {
-            text: 'x Axis',
+        margin: { t: 25, r: 75, l: 65, b: 50 },
+        annotations: 
+        {
+            x: 0,
+            y: 0, 
+            // xref: 'x',
+            // yref: 'y',
+            text: 'HERE',
+            showarrow: true,
             font: {
               family: 'Courier New, monospace',
-              size: 100,
-              color: '#7f7f7f'
+              size: 16,
+              color: '#ffffff'
             }
-          }
       }
-      };
+    }
       
       Plotly.newPlot("gauge", gaugeData, layout_gauge);
 
@@ -215,22 +217,40 @@ d3.json(url).then(function(data) {
     // Clear previous selection in the panel:
     panel.html("");
 
-    // function to capitalize first letter in panel key-value pairs:
-    function capitalizeFirstLetter(string) {
-      return string.charAt(0).toUpperCase() + string.slice(1);
+    // // function to capitalize first letter in panel key-value pairs:
+    // function capitalizeFirstLetter(string) {
+    //   return string.charAt(0).toUpperCase() + string.slice(1);
+    // }
+
+    // Function to reformat the keys for the metadata so that the panel text is easier to read and interpret:
+    function reformKeys(key) {
+      if (key === "id") return key = "Subject ID" 
+      else if (key === "ethnicity") return key = "Ethnicity"
+      else if (key === "gender") return key = "Gender"
+      else if (key === "age") return key = "Age"
+      else if (key === "location") return key = "Location"
+      else if (key === "bbtype") return key = "Belly Button Type"
+      else if (key === "wfreq") return key = "Washing Frequency"; 
+        }
+
+    // Function to reformat the values for the metadata so that null values read as missing in the panel:
+    function reformValues(value) {
+      if (value === null) return value = "Missing" 
+      else return value
     }
-  
+
     // Add each key and value pair in the chonen metadata to a new header- h5 - seperated by a colon:
     Object.entries(newdata).forEach(([key, value]) => { 
-      // Use var to set key to capitalized first letter in panel using the function capitalizeFirstLetter(string): 
-      var key = capitalizeFirstLetter(key);
-      panel.append("h5").text(`${key}: ${value}`);    
+      // Use var to set key to reformat the keys in panel using the function reformKeys(string): 
+      var key = reformKeys(key);
+      // Use var to set key to reformat the keys in panel using the function reformKeys(string): 
+      var value = reformValues(value);
+      panel.append("h5").text(`${key}: ${value}`);     
     });    
   } 
 
   // Run the functions to create the dropdown menu and initilize the charts:
   createDropDown(data);  
   init();
-  console.log("Original Data: ",data);
 
 });    
