@@ -1,8 +1,6 @@
 # Module_14_belly_button_challenge
 Module 14 for UMN Data Bootcamp, by Zack Crowley
 
-Module 14 Challenge
-Due Thursday by 11:59pm Points 100 Submitting a text entry box or a website url
 Background
 In this assignment, you will build an interactive dashboard to explore the Belly Button Biodiversity dataset Links to an external site., which catalogs the microbes that colonize human navels.
 
