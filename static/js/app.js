@@ -161,24 +161,27 @@ d3.json(url).then(function(data) {
         {
           type: "indicator",
           mode: "gauge+number",
+          // colorscale: 'Earth',
           value: washing_freq,
           title: { text: `<b>Belly Button Washing Frequency of ID: ${newdata.id}</b> <br> Scrubs per Week`, font: { size: 18 } },
           gauge: {
-            axis: { range: [null, 9], tickmode: "array", tickvals: [0,1,2,3,4,5,6,7,8,9],ticks: "inside", tickwidth: 5, ticklen: 50,tickcolor: "darkblue" },
-            bar: { color: "black" },
+            axis: { range: [null, 9], tickmode: "array", tickvals: [0,1,2,3,4,5,6,7,8,9], ticks: "inside", tickwidth: 4, ticklen: 50, tickcolor: "lightslategrey" }, 
+            // Set the color of the gauge marker:
+            bar: { thickness:0.6, color: "black" }, 
             bgcolor: "white",
             borderwidth: 2,
-            bordercolor: "gray",
+            bordercolor: "lightslategrey",
+            // Set the colors for the thresholds:
             steps: [
-              { range: [0, 1], color: "white" },
-              { range: [1, 2], color: "gray" },
-              { range: [2,3], color: "yellow" },
-              { range: [3, 4], color: "cyan" },
-              { range: [5, 6], color: "royalblue" },
-              { range: [6, 7], color: "royalblue" },
-              { range: [7, 8], color: "royalblue" },
-              { range: [8, 9], color: "royalblue" },
-              // NEED TO FIX COLORS AND FORMAT REST OF CHART:
+              { range: [0, 1], color: "#f7fcf0" },
+              { range: [1, 2], color: "#e0f3db" },
+              { range: [2,3], color: "#ccebc5" },
+              { range: [3, 4], color: "#a8ddb5" },
+              { range: [4, 5], color: "#7bccc4" },
+              { range: [5, 6], color: "#4eb3d3" },
+              { range: [6, 7], color: "#2b8cbe" },
+              { range: [7, 8], color: "#0868ac" },
+              { range: [8, 9], color: "#084081" }
             ]
           }
         }
@@ -187,8 +190,17 @@ d3.json(url).then(function(data) {
       var layout_gauge = {
         width: 500,
         height: 450,
-        margin: { t: 25, r: 50, l: 50, b: 50 }
-        //, xaxis: {title: {text: 'Scrubs per Week'}} NEED TO FIX
+        margin: { t: 25, r: 50, l: 50, b: 50 }, 
+        yaxis: {
+          title: {
+            text: 'x Axis',
+            font: {
+              family: 'Courier New, monospace',
+              size: 100,
+              color: '#7f7f7f'
+            }
+          }
+      }
       };
       
       Plotly.newPlot("gauge", gaugeData, layout_gauge);
